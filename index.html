@@ -1,0 +1,921 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tabscrow Solar</title>
+<meta name="description" content="Forget the energy market, weather conditions and seasons. Our Smart Controller guarantees you get no electricity bill for 10 years.">
+<meta property="og:title" content="Tabscrow Solar">
+<meta property="og:description" content="Forget the energy market, weather conditions and seasons. Our Smart Controller guarantees you get no electricity bill for 10 years.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --u:min(calc(100vw/1600),calc(100vh/900));
+  --k:1;--k2:1;--dip:0;
+  --ink:color-mix(in srgb,#14202f calc((1 - var(--k))*100%),#fff);
+  --nav:color-mix(in srgb,#1b2736 calc((1 - var(--k))*100%),#eef1f6);
+  --soft:color-mix(in srgb,#1b2736 calc((1 - var(--k))*100%),#dfe5ee);
+  --panel-bg:color-mix(in srgb,rgba(246,247,242,.92) calc((1 - var(--k))*100%),rgba(12,20,36,.90));
+  --panel-card:color-mix(in srgb,rgba(255,255,255,.72) calc((1 - var(--k))*100%),rgba(22,33,54,.72));
+  --panel-border:color-mix(in srgb,rgba(20,32,47,.12) calc((1 - var(--k))*100%),rgba(255,255,255,.14));
+  --panel-muted:color-mix(in srgb,#4a5868 calc((1 - var(--k))*100%),#9fb0c7);
+  --accent:color-mix(in srgb,#55731a calc((1 - var(--k))*100%),#d8ee8e);
+  --accent-ink:color-mix(in srgb,#fff calc((1 - var(--k))*100%),#0d1520);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0b1426}
+body{font-family:"Instrument Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+button{background:none;border:0;cursor:pointer}
+.hero{position:relative;height:100svh;min-height:520px;overflow:hidden;isolation:isolate;background:#0b1426}
+.layer,.layer img{position:absolute;inset:0;width:100%;height:100%}
+.layer img{display:block;object-fit:cover;object-position:50% 62%}
+.sky img{filter:blur(calc(7*var(--u)));transform:scale(1.05)}
+#skyN{opacity:var(--k)}
+.home{will-change:transform;transform:translate3d(0,var(--sink,0px),0)}
+.home .set{position:absolute;inset:0;visibility:hidden}
+.home .set.is-on{visibility:visible}
+.ground{-webkit-mask-image:linear-gradient(transparent 54%,#000 64%);mask-image:linear-gradient(transparent 54%,#000 64%)}
+.tilt{position:absolute;inset:0;pointer-events:none;-webkit-backdrop-filter:blur(calc(9*var(--u)));backdrop-filter:blur(calc(9*var(--u)));-webkit-mask-image:linear-gradient(transparent 70%,#000 92%);mask-image:linear-gradient(transparent 70%,#000 92%)}
+#fog{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.ui{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;pointer-events:none}
+.ui a,.ui button{pointer-events:auto}
+.bar{position:relative;z-index:20;width:100%;display:flex;align-items:center;padding:calc(22*var(--u)) calc(38*var(--u)) 0;color:var(--nav)}
+.logo{display:flex;align-items:center;gap:calc(9*var(--u));font-size:calc(25*var(--u));font-weight:500;letter-spacing:-.025em;color:var(--ink);flex:1 1 0;white-space:nowrap}
+.logo svg{width:calc(38*var(--u));height:calc(38*var(--u));flex:none}
+.links{display:flex;gap:calc(42*var(--u));list-style:none;font-size:calc(16.5*var(--u));font-weight:500;opacity:calc(1 - var(--dip)*.82)}
+.links a,.side>a:first-child{position:relative;white-space:nowrap;padding:4px 0;transition:opacity .18s}
+.links a::after,.side>a:first-child::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1.5px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .2s cubic-bezier(.16,1,.3,1)}
+.links a:hover::after,.links a.is-active::after,.side>a:first-child:hover::after,.side>a:first-child.is-active::after{transform:scaleX(1)}
+.side{flex:1 1 0;display:flex;align-items:center;justify-content:flex-end;gap:calc(40*var(--u));font-size:calc(16.5*var(--u));font-weight:500}
+.side>a:first-child{opacity:calc(1 - var(--dip)*.82)}
+.cta{display:inline-flex;align-items:center;height:calc(46*var(--u));padding:0 calc(26*var(--u));border-radius:99px;white-space:nowrap;flex-shrink:0;
+  background:color-mix(in srgb,#0d1117 calc((1 - var(--k))*100%),#fff);color:color-mix(in srgb,#fff calc((1 - var(--k))*100%),#0d1117);opacity:calc(1 - var(--dip)*.62);transition:transform .25s,box-shadow .2s}
+.cta:hover{transform:translateY(-1px)}
+.cta.is-active{box-shadow:0 0 0 2px var(--accent)}
+.menu-btn{display:none;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;border:1px solid var(--panel-border);color:var(--ink)}
+h1{margin-top:calc(58*var(--u));text-align:center;font-size:calc(64*var(--u));line-height:1.09;font-weight:500;letter-spacing:-.022em;color:var(--ink);transition:opacity .25s,transform .25s}
+h1 span{display:block}
+h1 .l1,h1 .y{opacity:calc(1 - var(--dip)*.8)}
+h1 i{font-style:normal;color:color-mix(in srgb,#14202f calc((1 - var(--k2))*42%),color-mix(in srgb,#fff calc(var(--k2)*100%),#7c8794))}
+h1 .y{display:inline}
+.dock{margin-top:auto;padding-bottom:calc(40*var(--u));display:flex;flex-direction:column;align-items:center;transition:opacity .25s,transform .25s}
+.hero.has-page h1,.hero.has-page .dock{opacity:0;pointer-events:none;transform:translateY(10px)}
+.toggle{position:relative;display:grid;grid-template-columns:1fr 1fr;width:calc(524*var(--u));height:calc(86*var(--u));padding:calc(2*var(--u));border-radius:calc(16*var(--u));overflow:hidden;
+  background:rgba(120,132,140,.34);border:1px solid rgba(255,255,255,.2);-webkit-backdrop-filter:blur(calc(14*var(--u)));backdrop-filter:blur(calc(14*var(--u)))}
+.toggle button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(3*var(--u));border-radius:calc(13*var(--u));color:#fff;overflow:hidden}
+.toggle button:before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(160deg,#f7f8dc,#e2ee9f 90%);box-shadow:inset 0 0 calc(18*var(--u)) rgba(255,255,255,.65);opacity:var(--on)}
+.toggle b,.toggle small{position:relative;color:color-mix(in srgb,#1c2316 calc(var(--on)*100%),#fff)}
+.toggle b{font-size:calc(23*var(--u));font-weight:500;letter-spacing:-.012em}
+.toggle small{font-size:calc(15*var(--u));opacity:.72}
+.toggle button:focus-visible,.page-close:focus-visible,.seg-btn:focus-visible,.btn-primary:focus-visible,.btn-ghost:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.toggle button:focus-visible{outline:2px solid #fff;outline-offset:-4px}
+#bm{--on:calc(1 - var(--k))}#bn{--on:var(--k)}
+.cap{margin-top:calc(22*var(--u));text-align:center;font-size:calc(16.4*var(--u));line-height:1.3;color:var(--soft)}
+
+/* Interactive Page Drawer */
+.page-layer{
+  position:absolute;left:0;right:0;bottom:0;top:calc(82*var(--u));z-index:15;
+  display:flex;justify-content:center;padding:16px 32px 28px;
+  pointer-events:none;opacity:0;transform:translateY(14px);
+  transition:opacity .24s cubic-bezier(.16,1,.3,1),transform .24s cubic-bezier(.16,1,.3,1);
+}
+.hero.has-page .page-layer{pointer-events:auto;opacity:1;transform:translateY(0)}
+.page-shell{
+  width:100%;max-width:1160px;height:100%;display:flex;flex-direction:column;
+  background:var(--panel-bg);color:var(--ink);
+  border:1px solid var(--panel-border);border-radius:20px;
+  -webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);
+  box-shadow:0 24px 64px rgba(0,0,0,.32);overflow:hidden;
+}
+.page-head{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:18px 28px;border-bottom:1px solid var(--panel-border);flex-shrink:0;
+}
+.page-kicker{font-size:13px;font-weight:500;color:var(--panel-muted);letter-spacing:.01em}
+.page-head-actions{display:flex;align-items:center;gap:10px}
+.scene-mini{
+  display:inline-flex;padding:3px;border-radius:10px;border:1px solid var(--panel-border);background:var(--panel-card);
+}
+.scene-mini button{
+  padding:6px 12px;border-radius:7px;font-size:13px;font-weight:500;color:var(--panel-muted);transition:background .15s,color .15s;
+}
+.scene-mini button[aria-pressed="true"]{
+  background:var(--accent);color:var(--accent-ink);
+}
+.page-close{
+  display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border-radius:9px;
+  border:1px solid var(--panel-border);font-size:13px;font-weight:500;color:var(--ink);
+  background:var(--panel-card);transition:transform .15s,opacity .15s;
+}
+.page-close:hover{opacity:.85}
+.page-body{
+  flex:1;overflow-y:auto;padding:28px 32px 36px;
+  scrollbar-width:thin;scrollbar-color:var(--panel-border) transparent;
+}
+.page-title{font-size:clamp(26px,3vw,38px);font-weight:500;letter-spacing:-.022em;line-height:1.12;text-wrap:balance}
+.page-lead{margin-top:10px;max-width:66ch;font-size:16px;line-height:1.55;color:var(--panel-muted)}
+.divider{height:1px;background:var(--panel-border);margin:24px 0}
+.grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.grid-4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.card{
+  background:var(--panel-card);border:1px solid var(--panel-border);border-radius:14px;padding:20px;
+  display:flex;flex-direction:column;gap:10px;transition:border-color .15s,transform .15s;
+}
+.card.is-interactive{cursor:pointer;text-align:left}
+.card.is-interactive:hover{border-color:var(--accent);transform:translateY(-1px)}
+.card.is-selected{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.card h3{font-size:18px;font-weight:500;letter-spacing:-.015em}
+.card p{font-size:14.5px;line-height:1.55;color:var(--panel-muted)}
+.meta-line{font-size:13px;color:var(--panel-muted);display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.num{font-variant-numeric:tabular-nums}
+.stat-val{font-size:clamp(24px,2.4vw,32px);font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stat-lbl{font-size:13px;color:var(--panel-muted)}
+.seg-bar{display:inline-flex;flex-wrap:wrap;gap:6px;padding:4px;border-radius:11px;border:1px solid var(--panel-border);background:var(--panel-card);margin:18px 0}
+.seg-btn{padding:8px 14px;border-radius:8px;font-size:13.5px;font-weight:500;color:var(--panel-muted);white-space:nowrap;transition:background .15s,color .15s}
+.seg-btn.is-active{background:var(--accent);color:var(--accent-ink)}
+.btn-primary{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;height:42px;padding:0 20px;border-radius:10px;
+  background:var(--accent);color:var(--accent-ink);font-size:14.5px;font-weight:600;white-space:nowrap;transition:opacity .15s,transform .15s;
+}
+.btn-primary:hover{opacity:.92;transform:translateY(-1px)}
+.btn-ghost{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;height:40px;padding:0 16px;border-radius:10px;
+  border:1px solid var(--panel-border);background:var(--panel-card);color:var(--ink);font-size:14px;font-weight:500;white-space:nowrap;
+}
+.btn-ghost:hover{border-color:var(--ink)}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:13px;font-weight:500;color:var(--panel-muted)}
+.input,.select,.textarea{
+  width:100%;padding:10px 13px;border-radius:10px;border:1px solid var(--panel-border);
+  background:color-mix(in srgb,#fff calc((1 - var(--k))*85%),rgba(10,17,30,.75));
+  color:var(--ink);font-size:14.5px;outline:none;transition:border-color .15s;
+}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--accent)}
+.range{width:100%;accent-color:var(--accent);cursor:pointer}
+.err{font-size:12.5px;color:#e05d5d;margin-top:4px}
+.notice{
+  padding:16px 18px;border-radius:12px;border:1px solid var(--accent);
+  background:color-mix(in srgb,var(--accent) 12%,transparent);font-size:14.5px;line-height:1.5;
+}
+.bar-chart{display:grid;grid-template-columns:repeat(12,1fr);gap:8px;align-items:end;height:140px;padding-top:16px}
+.bar-col{display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.bar-fill{width:100%;border-radius:6px 6px 2px 2px;background:var(--accent);min-height:8px;transition:height .25s cubic-bezier(.16,1,.3,1)}
+.bar-lbl{font-size:11.5px;color:var(--panel-muted);font-variant-numeric:tabular-nums}
+.faq-item{border-bottom:1px solid var(--panel-border)}
+.faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 0;text-align:left;font-size:15.5px;font-weight:500}
+.faq-a{padding-bottom:16px;font-size:14.5px;line-height:1.55;color:var(--panel-muted);display:none}
+.faq-item.is-open .faq-a{display:block}
+
+/* Mobile Nav Sheet */
+.mobile-nav{
+  position:fixed;inset:0;z-index:30;background:var(--panel-bg);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);
+  display:none;flex-direction:column;padding:20px;gap:10px;color:var(--ink);
+}
+.mobile-nav.is-open{display:flex}
+.mobile-nav a{padding:14px 4px;border-bottom:1px solid var(--panel-border);font-size:19px;font-weight:500}
+
+@media (max-width:820px){
+  :root{--u:1px}
+  .bar{padding:16px 16px 0}
+  .logo{font-size:21px}.logo svg{width:32px;height:32px}
+  .links,.side>a:first-child{display:none}
+  .side{gap:8px}
+  .cta{height:40px;padding:0 14px;font-size:13.5px}
+  .menu-btn{display:inline-flex}
+  h1{margin-top:34px;padding:0 16px;font-size:clamp(34px,10.4vw,56px)}
+  .layer img,.home .cut{object-position:72% 62%!important}
+  .dock{width:100%;padding:0 16px 24px}
+  .toggle{width:100%;max-width:440px;height:74px}
+  .toggle b{font-size:19px}.toggle small{font-size:13px}
+  .cap{font-size:14px;max-width:360px}
+  .cap br{display:none}
+  .page-layer{top:68px;padding:10px 12px 14px}
+  .page-head{padding:14px 16px;flex-wrap:wrap}
+  .page-body{padding:18px 16px 28px}
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+  .scene-mini{display:none}
+}
+</style>
+</head>
+<body>
+<main class="hero" id="hero">
+  <div class="layer sky">
+    <img id="skyM" alt="" src="https://images.higgs.ai/?default=1&amp;output=webp&amp;url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261102_040343_a73684b4-3f71-4613-a843-c8be80fb1211.png&amp;w=1600&amp;q=80">
+    <img id="skyN" alt="" src="https://images.higgs.ai/?default=1&amp;output=webp&amp;url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261102_040308_f31964ab-ed8e-4ea4-90eb-3226c0859936.png&amp;w=1600&amp;q=80">
+  </div>
+  <div class="layer home">
+    <div class="set" id="setM">
+      <div class="layer ground"><img alt="" src="https://images.higgs.ai/?default=1&amp;output=webp&amp;url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261102_040259_1be34093-835e-4de4-b3a8-f875e6a74591.png&amp;w=2560&amp;q=85"></div>
+      <img class="cut" alt="A charcoal farmhouse with solar panels in soft morning light" src="https://images.higgs.ai/?default=1&amp;output=webp&amp;url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261102_040416_e3b05fa4-cc80-4a43-afde-8a0a053933e9.png&amp;w=2560&amp;q=85" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 62%">
+    </div>
+    <div class="set is-on" id="setN">
+      <div class="layer ground"><img alt="" src="https://images.higgs.ai/?default=1&amp;output=webp&amp;url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261102_040211_c8fd4865-285e-4c1f-8a37-4bfe0771357b.png&amp;w=2560&amp;q=85"></div>
+      <img class="cut" alt="The same farmhouse at dusk with warm amber windows" src="https://images.higgs.ai/?default=1&amp;output=webp&amp;url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261102_040415_2ab95096-8c39-449f-b36c-17c2813815a4.png&amp;w=2560&amp;q=85" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 62%">
+    </div>
+  </div>
+  <div class="tilt"></div>
+  <canvas id="fog" aria-hidden="true"></canvas>
+  <div class="ui">
+    <header class="bar">
+      <a class="logo" href="#home" data-route="home" aria-label="Tabscrow Solar">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><g fill="color-mix(in srgb,#2563eb calc((1 - var(--k))*100%),#60a5fa)"><circle cx="20" cy="20" r="0"/><path id="ray" d="M18.3 3.5h3.4l.9 8.4h-5.2Z"/><use href="#ray" transform="rotate(30 20 20)"/><use href="#ray" transform="rotate(60 20 20)"/><use href="#ray" transform="rotate(90 20 20)"/><use href="#ray" transform="rotate(120 20 20)"/><use href="#ray" transform="rotate(150 20 20)"/><use href="#ray" transform="rotate(180 20 20)"/><use href="#ray" transform="rotate(210 20 20)"/><use href="#ray" transform="rotate(240 20 20)"/><use href="#ray" transform="rotate(270 20 20)"/><use href="#ray" transform="rotate(300 20 20)"/><use href="#ray" transform="rotate(330 20 20)"/></g></svg>
+        Tabscrow Solar
+      </a>
+      <ul class="links">
+        <li><a href="#how-it-works" data-route="how-it-works">How It Works</a></li>
+        <li><a href="#our-cases" data-route="our-cases">Our Cases</a></li>
+        <li><a href="#about-us" data-route="about-us">About Us</a></li>
+        <li><a href="#careers" data-route="careers">Careers</a></li>
+        <li><a href="#resources" data-route="resources">Resources</a></li>
+      </ul>
+      <div class="side">
+        <a href="#customers" data-route="customers">Customers</a>
+        <a class="cta" href="#quote" data-route="quote">Get an Instant Quote</a>
+        <button class="menu-btn" id="menuBtn" aria-label="Open navigation menu" aria-expanded="false">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </header>
+    <h1><span class="l1">$0 Electricity Bills</span><span><i>for the next</i> <span class="y">10 Years</span></span></h1>
+    <div class="dock">
+      <div class="toggle" role="group" aria-label="Time of day">
+        <button id="bm" aria-pressed="false"><b>Morning</b><small>$0 for Electricity</small></button>
+        <button id="bn" aria-pressed="true"><b>Night</b><small>$0 for Electricity</small></button>
+      </div>
+      <p class="cap">Forget the energy market, weather conditions and seasons. Our Smart<br>Controller guarantees you get no electricity bill for 10 years.</p>
+    </div>
+  </div>
+
+  <section class="page-layer" id="pageLayer" aria-live="polite" hidden>
+    <div class="page-shell" role="dialog" aria-modal="false" aria-labelledby="pageKicker">
+      <div class="page-head">
+        <span class="page-kicker" id="pageKicker">Tabscrow Solar</span>
+        <div class="page-head-actions">
+          <div class="scene-mini" role="group" aria-label="Scene lighting">
+            <button type="button" id="miniMorning" aria-pressed="false">Morning</button>
+            <button type="button" id="miniNight" aria-pressed="true">Night</button>
+          </div>
+          <button type="button" class="page-close" id="pageClose">Back to Scene</button>
+        </div>
+      </div>
+      <div class="page-body" id="pageBody"></div>
+    </div>
+  </section>
+</main>
+
+<nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+    <span style="font-size:19px;font-weight:500">Tabscrow Solar</span>
+    <button type="button" class="page-close" id="mobileClose">Close</button>
+  </div>
+  <a href="#how-it-works" data-route="how-it-works">How It Works</a>
+  <a href="#our-cases" data-route="our-cases">Our Cases</a>
+  <a href="#about-us" data-route="about-us">About Us</a>
+  <a href="#careers" data-route="careers">Careers</a>
+  <a href="#resources" data-route="resources">Resources</a>
+  <a href="#customers" data-route="customers">Customers</a>
+  <a href="#quote" data-route="quote">Get an Instant Quote</a>
+  <div style="margin-top:auto;display:flex;gap:10px">
+    <button type="button" class="btn-ghost" style="flex:1" id="mobMorning">Morning Scene</button>
+    <button type="button" class="btn-ghost" style="flex:1" id="mobNight">Night Scene</button>
+  </div>
+</nav>
+
+<script>
+const root=document.documentElement.style,$=id=>document.getElementById(id);
+const calm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const SINK=240,RISE=820,DEPTH=.27;
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const smooth=(a,b,x)=>{x=clamp((x-a)/(b-a));return x*x*(3-2*x)};
+let night=1,target=1,from=1,start=-1e9,queued=null,swapped=true,k=1,surge=0;
+
+const cv=$('fog'),gl=cv.getContext('webgl2',{alpha:true,premultipliedAlpha:true,antialias:false});
+let U={};
+if(gl){
+  const vs=`#version 300 es
+  void main(){vec2 p=vec2((gl_VertexID<<1)&2,gl_VertexID&2);gl_Position=vec4(p*2.-1.,0,1);}`;
+  const fs=`#version 300 es
+  precision highp float;
+  uniform vec2 R;uniform float T,S,K;out vec4 O;
+  float h(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
+  float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
+    return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
+  float fbm(vec2 p){float a=.5,s=0.;mat2 m=mat2(1.6,1.2,-1.2,1.6);p=mat2(.8,.6,-.6,.8)*p+5.3;for(int i=0;i<5;i++){s+=a*n(p);p=m*p;a*=.5;}return s;}
+  void main(){
+    vec2 uv=gl_FragCoord.xy/R;uv.y=1.-uv.y;
+    float asp=R.x/R.y;vec2 p=vec2(uv.x*asp,uv.y);
+    float t=T*.05;
+    vec2 w=vec2(fbm(p*1.3+vec2(t,-t*.6)),fbm(p*1.3+vec2(-t*.8,t)+7.));
+    float d=fbm(p*1.9+w*1.7+vec2(t*1.6,-t*1.1+S*.5));
+    float e=fbm(p*.9-w+vec2(-t,t*.5)+3.);
+    float low=smooth2(.70,1.04,uv.y+(d-.5)*.34);
+    float side=smooth2(.2,.0,uv.x+(e-.5)*.28)+smooth2(.8,1.,uv.x+(e-.5)*.28);
+    side*=smooth2(.25,.6,uv.y)*.2;
+    float wisps=smooth2(.5,.78,d)*smooth2(.22,.5,uv.y)*smooth2(.86,.6,uv.y)*.18;
+    float rest=clamp(low+side+wisps,0.,1.);
+    float front=1.02-S*.68;
+    float rise=smooth2(front-.02,front+.26,uv.y+(d-.5)*.5);
+    float haze=S*(.3+.46*d);
+    float a=clamp(max(rest,max(rise*.97,haze)),0.,1.);
+    vec3 dayA=vec3(.97,.93,.84),dayB=vec3(.79,.78,.71);
+    vec3 nitA=vec3(.40,.45,.57),nitB=vec3(.15,.19,.29);
+    vec3 c=mix(mix(dayB,dayA,d*1.15),mix(nitB,nitA,d*1.1),K);
+    float porch=exp(-dot((uv-vec2(.72,.74))*vec2(1.7,2.6),(uv-vec2(.72,.74))*vec2(1.7,2.6))*3.2);
+    c=mix(c,vec3(.86,.55,.27),K*porch*.42*(1.-S));
+    O=vec4(c*a,a);
+  }`.replace(/smooth2/g,'smoothstep');
+  const sh=(t,s)=>{const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);
+    if(!gl.getShaderParameter(o,gl.COMPILE_STATUS))console.error(gl.getShaderInfoLog(o));return o};
+  const pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,vs));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,fs));
+  gl.linkProgram(pr);gl.useProgram(pr);
+  for(const u of['R','T','S','K'])U[u]=gl.getUniformLocation(pr,u);
+}
+function size(){
+  if(!gl)return;
+  const w=Math.round(Math.min(innerWidth,960)),h=Math.round(w*innerHeight/innerWidth);
+  if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;gl.viewport(0,0,w,h)}
+}
+addEventListener('resize',size);size();
+
+function show(n){
+  $('setM').classList.toggle('is-on',!n);$('setN').classList.toggle('is-on',!!n);
+}
+function syncPressed(n){
+  $('bm').setAttribute('aria-pressed',!n);$('bn').setAttribute('aria-pressed',!!n);
+  $('miniMorning').setAttribute('aria-pressed',!n);$('miniNight').setAttribute('aria-pressed',!!n);
+}
+function pick(n){
+  if(n===target&&queued===null)return;
+  syncPressed(n);
+  if(calm){target=night=n;k=n;show(n);return}
+  if(animating)queued=n;else begin(n,clock);
+}
+let animating=false,clock=0;
+function begin(n,now){target=n;from=k;start=now;swapped=false;animating=true}
+$('bm').onclick=()=>pick(0);$('bn').onclick=()=>pick(1);
+$('miniMorning').onclick=()=>pick(0);$('miniNight').onclick=()=>pick(1);
+$('mobMorning').onclick=()=>{pick(0);closeMobileNav()};
+$('mobNight').onclick=()=>{pick(1);closeMobileNav()};
+
+function frame(now){
+  clock=now;
+  const d=now-start;let y=0,s=0,dip=0,k2=k;
+  if(animating){
+    if(d<SINK){const x=d/SINK;y=x*x*(3-2*x)*DEPTH}
+    else{
+      if(!swapped){swapped=true;night=target;show(target)}
+      const x=clamp((d-SINK)/RISE);y=Math.pow(1-x,3.4)*DEPTH;
+    }
+    s=smooth(0,SINK*.92,d)*(1-smooth(SINK+70,SINK+RISE*.92,d));
+    dip=smooth(30,190,d)*(1-smooth(330,720,d));
+    k=from+(target-from)*smooth(120,520,d);
+    k2=from+(target-from)*smooth(340,760,d);
+    if(d>=SINK+RISE){animating=false;k=k2=target;y=s=dip=0;if(queued!==null&&queued!==target){const q=queued;queued=null;begin(q,now)}else queued=null}
+  }
+  root.setProperty('--sink',(y*innerHeight).toFixed(1)+'px');
+  root.setProperty('--k',k.toFixed(3));root.setProperty('--k2',k2.toFixed(3));root.setProperty('--dip',dip.toFixed(3));
+  if(gl){gl.uniform2f(U.R,cv.width,cv.height);gl.uniform1f(U.T,now/1000);gl.uniform1f(U.S,s);gl.uniform1f(U.K,k);gl.drawArrays(gl.TRIANGLES,0,3)}
+}
+function loop(t){frame(t);requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+
+/* Interactive Pages State & Content */
+const state={
+  route:'home',
+  howStage:0,
+  howWeather:'sunny',
+  howLoad:1.8,
+  caseFilter:'all',
+  selectedCaseId:'alder-ridge',
+  aboutTab:'engineering',
+  careerFilter:'all',
+  applyingRoleId:null,
+  appliedRoles:{},
+  resourceFilter:'all',
+  openResourceId:null,
+  openFaqIdx:0,
+  customerIdx:0,
+  controllerMode:'Autonomous Zero-Bill',
+  supportSent:false,
+  quote:{zip:'97209',bill:260,roof:'Standing Seam Metal',evs:1,backup:'Full-Home 10-Year Buffer',submitted:false,ref:''}
+};
+
+const HOW_STAGES=[
+  {num:'01',title:'Bifacial Roof Capture',summary:'All-black monocrystalline arrays harvest direct sunlight and diffused morning mist across variable roof pitches.',metric:'23.4% Cell Efficiency',detail:'Low-glare matte charcoal glass blends seamlessly into standing-seam or architectural shingle roofs while producing power even under coastal cloud cover.'},
+  {num:'02',title:'Tabscrow Smart Controller',summary:'Real-time load orchestration predicts household demand, weather shifts, and tariff windows every 15 seconds.',metric:'15s Forecast Horizon',detail:'Instead of passively exporting cheap power at noon and buying expensive energy at dusk, our Smart Controller routes every watt to maximize 10-year zero-bill coverage.'},
+  {num:'03',title:'LiFePO4 Night Reserve',summary:'Modular indoor-rated battery banks store surplus daytime harvest to carry HVAC, cooking, and EV loads through the night.',metric:'28.8 kWh Modular Bank',detail:'Thermal-managed lithium iron phosphate cells deliver over 6,000 deep cycles with zero active noise and automatic storm-reserve pre-charging.'},
+  {num:'04',title:'10-Year $0 Bill Guarantee',summary:'We contractually cover any net utility electricity charge for 10 full years—regardless of market rates, weather, or seasons.',metric:'120 Monthly Cycles',detail:'If a severe winter or utility rate spike causes net grid import, Tabscrow Solar settles the difference automatically. One fixed plan, zero electricity bills for 10 years.'}
+];
+
+const CASES=[
+  {id:'alder-ridge',type:'farmhouse',title:'Alder Ridge Farmhouse',location:'Willamette Valley, OR',array:'14.8 kW',battery:'28.8 kWh',annualGen:'18,420 kWh',gridBill:'$0 / mo',tenYrSavings:'$38,400',quote:'"Two winters of heavy fog and three electric vehicle commutes later, we still haven’t paid a single utility bill."',owner:'Hannah & David Mercer'},
+  {id:'cedar-bluff',type:'cold',title:'Cedar Bluff Residence',location:'Stowe, VT',array:'16.2 kW',battery:'43.2 kWh',annualGen:'19,150 kWh',gridBill:'$0 / mo',tenYrSavings:'$46,200',quote:'"Heat pumps run continuously in January and the Smart Controller keeps our night reserve locked without touching grid peak pricing."',owner:'Marcus Lindqvist'},
+  {id:'point-reyes',type:'coastal',title:'Point Reyes Coastal House',location:'Marin County, CA',array:'11.4 kW',battery:'28.8 kWh',annualGen:'16,900 kWh',gridBill:'$0 / mo',tenYrSavings:'$51,900',quote:'"Our coastal rates jumped twice in one year. Tabscrow Solar absorbed the volatility completely under our 10-year guarantee."',owner:'Priya & Kenji Sato'},
+  {id:'solstice-barn',type:'farmhouse',title:'Solstice Timber Barn',location:'Boulder, CO',array:'13.6 kW',battery:'28.8 kWh',annualGen:'20,300 kWh',gridBill:'$0 / mo',tenYrSavings:'$34,800',quote:'"Installation took two days and the matte panels sit flush with our charcoal metal roof."',owner:'Claire Bennett'}
+];
+
+const ROLES=[
+  {id:'pe-1',dept:'Power Electronics',title:'Senior Inverter Firmware Engineer',location:'Portland, OR · Hybrid',comp:'$175k–$205k',desc:'Design real-time MPPT and grid-forming control loops for Tabscrow Smart Controller hardware.'},
+  {id:'gs-1',dept:'Grid Software',title:'Energy Forecasting Systems Engineer',location:'Remote · US',comp:'$165k–$195k',desc:'Build probabilistic weather and household load models backing our 10-year zero-bill underwriting.'},
+  {id:'fi-1',dept:'Field Installation',title:'Lead Solar & Storage Electrician',location:'Burlington, VT · On-site',comp:'$98k–$124k',desc:'Lead two-day residential installations for standing-seam, architectural shingle, and battery vaults.'},
+  {id:'op-1',dept:'Operations',title:'Underwriting & Tariff Analyst',location:'Denver, CO · Hybrid',comp:'$120k–$145k',desc:'Model regional utility tariff structures across 34 states to price 10-year zero-bill homeowner plans.'}
+];
+
+const RESOURCES=[
+  {id:'r1',cat:'Guides',title:'How the 10-Year $0 Electricity Bill Guarantee Works',read:'5 min read',date:'October 2026',summary:'An unvarnished breakdown of how Tabscrow Solar sizes your array and Smart Controller battery bank so seasonal surpluses offset winter deficits across all 120 monthly billing cycles.',body:'Traditional solar leaves homeowners exposed to utility rate hikes, net-metering policy cuts, and cloudy winters. Tabscrow Solar flips the contract: we engineer your array and LiFePO4 reserve to 112% of historical annual consumption, monitor inverter health continuously, and contractually reimburse any residual utility kWh charges for 10 full years.'},
+  {id:'r2',cat:'Technical Briefs',title:'Smart Controller Dispatch: Predicting Fog & Load Shifts',read:'7 min read',date:'September 2026',summary:'Inside our 15-second edge telemetry loop that balances roof production, battery state-of-charge, and EV charging schedules.',body:'By combining hyperlocal cloud-cover telemetry with a rolling 14-day household load profile, the Smart Controller shifts high-draw appliances—such as heat-pump water heaters and Level-2 EV chargers—into peak solar hours while preserving evening comfort reserve.'},
+  {id:'r3',cat:'Policy & Guarantee',title:'2026–2036 Utility Tariff & Net-Metering Resilience Report',read:'6 min read',date:'August 2026',summary:'Why time-of-use rate escalations make paired storage essential for locking in predictable household energy costs over a 10-year horizon.',body:'Across major investor-owned utilities, evening peak rates now exceed off-peak rates by 2.4x to 3.8x. Homes without automated battery arbitrage forfeit up to 60% of their solar value. Paired Smart Controller storage eliminates evening grid purchases entirely.'}
+];
+
+const FAQS=[
+  {q:'What happens if my electricity usage increases during the 10 years?',a:'Your agreement includes a baseline kWh allowance sized with a 12% buffer. If you add an EV or heat pump later, you can expand your Smart Controller capacity seamlessly without voiding the 10-year guarantee.'},
+  {q:'Do I still receive a monthly utility connection statement?',a:'Your utility remains connected for grid reliability, and Tabscrow Solar covers all net energy consumption charges for 10 years so your net electricity bill stays $0.'},
+  {q:'How does the system perform during multi-day winter fog or snow?',a:'Panels continue harvesting diffused light and shed snow quickly at standard roof pitches. Meanwhile, the Smart Controller automatically balances reserve capacity and off-peak buffering to protect your 10-year zero-bill guarantee.'},
+  {q:'Is the 10-year guarantee transferable if I sell my home?',a:'Yes. The Tabscrow Solar 10-Year $0 Bill Guarantee stays attached to the home address and transfers to the new homeowner at zero transfer fee.'}
+];
+
+const CUSTOMERS=[
+  {name:'Hannah & David Mercer',home:'Alder Ridge Farmhouse · Willamette Valley, OR',plan:'Year 3 of 10 · $0.00 Current Cycle',gen:[1.1,1.3,1.6,1.8,2.1,2.3,2.4,2.2,1.8,1.4,1.0,0.9],todayGen:'48.2 kWh',battery:'86%',gridImport:'0.0 kWh'},
+  {name:'Marcus Lindqvist',home:'Cedar Bluff Residence · Stowe, VT',plan:'Year 2 of 10 · $0.00 Current Cycle',gen:[0.9,1.1,1.5,1.7,2.0,2.2,2.3,2.0,1.6,1.3,0.9,0.8],todayGen:'41.6 kWh',battery:'78%',gridImport:'0.0 kWh'},
+  {name:'Priya & Kenji Sato',home:'Point Reyes Coastal · Marin County, CA',plan:'Year 4 of 10 · $0.00 Current Cycle',gen:[1.2,1.3,1.5,1.7,1.9,2.0,2.1,2.0,1.8,1.5,1.2,1.1],todayGen:'44.9 kWh',battery:'91%',gridImport:'0.0 kWh'}
+];
+
+function esc(s){
+  return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function renderPage(){
+  const r=state.route;
+  const hero=$('hero');
+  const layer=$('pageLayer');
+  const body=$('pageBody');
+  const kicker=$('pageKicker');
+
+  document.querySelectorAll('[data-route]').forEach(el=>{
+    el.classList.toggle('is-active',el.getAttribute('data-route')===r);
+  });
+
+  if(r==='home'){
+    hero.classList.remove('has-page');
+    setTimeout(()=>{if(state.route==='home')layer.hidden=true},240);
+    return;
+  }
+
+  layer.hidden=false;
+  requestAnimationFrame(()=>hero.classList.add('has-page'));
+
+  if(r==='how-it-works'){
+    kicker.textContent='Tabscrow Solar · How It Works';
+    const st=HOW_STAGES[state.howStage];
+    const weatherFactor=state.howWeather==='sunny'?1.0:state.howWeather==='overcast'?0.64:0.48;
+    const solarKw=(7.8*weatherFactor).toFixed(1);
+    const surplus=Math.max(0,(7.8*weatherFactor - state.howLoad)).toFixed(1);
+    const batteryDraw=Math.max(0,(state.howLoad - 7.8*weatherFactor)).toFixed(1);
+    const batteryReserve=Math.min(98,Math.max(34,Math.round(74 + (7.8*weatherFactor - state.howLoad)*4))).toFixed(0);
+    body.innerHTML=`
+      <h2 class="page-title">Zero electricity bills for 10 years, engineered in four stages.</h2>
+      <p class="page-lead">Our Smart Controller continuously orchestrates rooftop capture, LiFePO4 battery storage, and household load so weather swings and utility rate hikes never reach your bank account.</p>
+      <div class="grid-4" style="margin-top:22px">
+        ${HOW_STAGES.map((item,i)=>`
+          <button type="button" class="card is-interactive ${state.howStage===i?'is-selected':''}" data-how-stage="${i}">
+            <span class="meta-line">${item.num} · ${esc(item.metric)}</span>
+            <h3>${esc(item.title)}</h3>
+            <p>${esc(item.summary)}</p>
+          </button>
+        `).join('')}
+      </div>
+      <div class="grid-2" style="margin-top:20px">
+        <div class="card">
+          <span class="meta-line">Stage ${st.num} Architecture</span>
+          <h3>${esc(st.title)}</h3>
+          <p>${esc(st.detail)}</p>
+          <div style="margin-top:auto;padding-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+            <a href="#quote" data-route="quote" class="btn-primary">Calculate My 10-Year Plan</a>
+            <a href="#our-cases" data-route="our-cases" class="btn-ghost">View Installed Homes</a>
+          </div>
+        </div>
+        <div class="card">
+          <span class="meta-line">Live Smart Controller Simulator</span>
+          <h3>Test Weather &amp; Household Load</h3>
+          <div class="seg-bar" style="margin:6px 0 10px">
+            <button type="button" class="seg-btn ${state.howWeather==='sunny'?'is-active':''}" data-weather="sunny">Clear Morning</button>
+            <button type="button" class="seg-btn ${state.howWeather==='overcast'?'is-active':''}" data-weather="overcast">Dense Fog</button>
+            <button type="button" class="seg-btn ${state.howWeather==='winter'?'is-active':''}" data-weather="winter">Winter Dusk</button>
+          </div>
+          <div class="field">
+            <label for="loadRange">Household Load: <span class="num" id="howLoadVal">${state.howLoad.toFixed(1)} kW</span></label>
+            <input class="range" id="loadRange" type="range" min="0.8" max="6.5" step="0.1" value="${state.howLoad}">
+          </div>
+          <div class="grid-2" style="margin-top:10px;gap:12px">
+            <div><div class="stat-val" id="howSolarKw">${solarKw} kW</div><div class="stat-lbl">Roof Harvest</div></div>
+            <div><div class="stat-val" id="howReserveVal">${batteryReserve}%</div><div class="stat-lbl" id="howReserveLbl">Reserve (${Number(surplus)>0?'+'+surplus+' kW charging':'-'+batteryDraw+' kW buffer'})</div></div>
+            <div><div class="stat-val">0.0 kWh</div><div class="stat-lbl">Net Utility Import</div></div>
+            <div><div class="stat-val">$0.00</div><div class="stat-lbl">Guaranteed 10-Year Bill</div></div>
+          </div>
+        </div>
+      </div>
+    `;
+  }else if(r==='our-cases'){
+    kicker.textContent='Tabscrow Solar · Our Cases';
+    const filtered=state.caseFilter==='all'?CASES:CASES.filter(c=>c.type===state.caseFilter);
+    const active=filtered.find(c=>c.id===state.selectedCaseId)||filtered[0];
+    if(active)state.selectedCaseId=active.id;
+    body.innerHTML=`
+      <h2 class="page-title">Verified homes running at $0 electricity bills.</h2>
+      <p class="page-lead">Every Tabscrow Solar installation is backed by a binding 10-year zero-bill guarantee across coastal fog, alpine winters, and summer heat waves.</p>
+      <div class="seg-bar" role="tablist" aria-label="Filter installations">
+        <button type="button" class="seg-btn ${state.caseFilter==='all'?'is-active':''}" data-case-filter="all">All Homes</button>
+        <button type="button" class="seg-btn ${state.caseFilter==='farmhouse'?'is-active':''}" data-case-filter="farmhouse">Farmhouse</button>
+        <button type="button" class="seg-btn ${state.caseFilter==='cold'?'is-active':''}" data-case-filter="cold">Cold Climate</button>
+        <button type="button" class="seg-btn ${state.caseFilter==='coastal'?'is-active':''}" data-case-filter="coastal">Coastal Fog</button>
+      </div>
+      <div class="grid-2">
+        <div style="display:flex;flex-direction:column;gap:12px">
+          ${filtered.map(c=>`
+            <button type="button" class="card is-interactive ${active&&active.id===c.id?'is-selected':''}" data-case-id="${c.id}">
+              <span class="meta-line">${esc(c.location)} · ${esc(c.array)} + ${esc(c.battery)}</span>
+              <h3>${esc(c.title)}</h3>
+              <p>${esc(c.owner)} · Projected 10-Year Savings <strong class="num">${esc(c.tenYrSavings)}</strong></p>
+            </button>
+          `).join('')}
+        </div>
+        ${active?`
+          <div class="card" style="justify-content:space-between">
+            <div>
+              <span class="meta-line">Case Telemetry · ${esc(active.location)}</span>
+              <h3 style="font-size:24px;margin-top:6px">${esc(active.title)}</h3>
+              <p style="margin-top:14px;font-size:16px;color:var(--ink)">${esc(active.quote)}</p>
+              <p style="margin-top:8px">— ${esc(active.owner)}</p>
+            </div>
+            <div class="grid-2" style="gap:16px;margin-top:20px;padding-top:18px;border-top:1px solid var(--panel-border)">
+              <div><div class="stat-val">${esc(active.array)}</div><div class="stat-lbl">Solar Array</div></div>
+              <div><div class="stat-val">${esc(active.battery)}</div><div class="stat-lbl">Smart Storage</div></div>
+              <div><div class="stat-val">${esc(active.annualGen)}</div><div class="stat-lbl">Annual Output</div></div>
+              <div><div class="stat-val">${esc(active.tenYrSavings)}</div><div class="stat-lbl">10-Year Savings (${esc(active.gridBill)})</div></div>
+            </div>
+            <div style="margin-top:20px">
+              <a href="#quote" data-route="quote" class="btn-primary">Get This System Quoted</a>
+            </div>
+          </div>
+        `:''}
+      </div>
+    `;
+  }else if(r==='about-us'){
+    kicker.textContent='Tabscrow Solar · About Us';
+    const tab=state.aboutTab;
+    const tabCopy={
+      engineering:{title:'Hardware & Control Built as One System',p1:'Most solar companies bolt together third-party panels, generic inverters, and passive monitoring apps. Tabscrow Solar designs the Smart Controller, telemetry firmware, and battery dispatch as one tightly coupled residential microgrid.',p2:'Every system is commissioned with predictive load orchestration so homeowners never have to think about peak utility windows or seasonal irradiance drops.'},
+      underwriting:{title:'Why We Guarantee $0 Bills for 10 Years',p1:'We underwrite our own installations. Because our forecasting models know your roof orientation, regional weather curves, and thermal load before installation begins, we assume the financial risk of utility price spikes.',p2:'For 10 full years (120 monthly billing cycles), if your home incurs a net electricity charge, Tabscrow Solar covers it automatically.'},
+      hardware:{title:'Built for 25-Year Roof Architecture',p1:'Our low-profile matte charcoal modules are engineered to complement modern farmhouses, standing-seam metal roofs, and architectural builds without visible racking clutter.',p2:'Indoor-rated LiFePO4 modules carry zero cobalt chemistry, passive acoustic cooling, and UL 9540A thermal runaway certification.'}
+    }[tab];
+    body.innerHTML=`
+      <h2 class="page-title">Power independence backed by a 10-year financial guarantee.</h2>
+      <p class="page-lead">Tabscrow Solar was founded by power-electronics engineers and grid actuaries who believed homeowners shouldn’t pay both for solar hardware and unpredictable utility bills.</p>
+      <div class="grid-4" style="margin-top:22px">
+        <div class="card"><div class="stat-val">10 Years</div><div class="stat-lbl">Contractual $0 Bill Guarantee</div></div>
+        <div class="card"><div class="stat-val">4,820+</div><div class="stat-lbl">Zero-Bill Homes Active</div></div>
+        <div class="card"><div class="stat-val">99.4%</div><div class="stat-lbl">Autonomous Uptime</div></div>
+        <div class="card"><div class="stat-val">34 States</div><div class="stat-lbl">Active Service Coverage</div></div>
+      </div>
+      <div class="seg-bar">
+        <button type="button" class="seg-btn ${tab==='engineering'?'is-active':''}" data-about-tab="engineering">Engineering</button>
+        <button type="button" class="seg-btn ${tab==='underwriting'?'is-active':''}" data-about-tab="underwriting">10-Year Underwriting</button>
+        <button type="button" class="seg-btn ${tab==='hardware'?'is-active':''}" data-about-tab="hardware">Architecture &amp; Safety</button>
+      </div>
+      <div class="card">
+        <h3>${esc(tabCopy.title)}</h3>
+        <p>${esc(tabCopy.p1)}</p>
+        <p>${esc(tabCopy.p2)}</p>
+      </div>
+    `;
+  }else if(r==='careers'){
+    kicker.textContent='Tabscrow Solar · Careers';
+    const depts=['all','Power Electronics','Grid Software','Field Installation','Operations'];
+    const roles=state.careerFilter==='all'?ROLES:ROLES.filter(x=>x.dept===state.careerFilter);
+    body.innerHTML=`
+      <h2 class="page-title">Build residential microgrids that eliminate utility bills.</h2>
+      <p class="page-lead">Join our engineering, forecasting, and field installation teams across Portland, Burlington, Denver, and remote US hubs.</p>
+      <div class="seg-bar">
+        ${depts.map(d=>`<button type="button" class="seg-btn ${state.careerFilter===d?'is-active':''}" data-career-filter="${esc(d)}">${d==='all'?'All Roles':esc(d)}</button>`).join('')}
+      </div>
+      <div class="grid-2">
+        ${roles.map(role=>{
+          const isApplying=state.applyingRoleId===role.id;
+          const isApplied=!!state.appliedRoles[role.id];
+          return `
+            <div class="card">
+              <span class="meta-line">${esc(role.dept)} · ${esc(role.location)} · <span class="num">${esc(role.comp)}</span></span>
+              <h3>${esc(role.title)}</h3>
+              <p>${esc(role.desc)}</p>
+              ${isApplied?`
+                <div class="notice" style="margin-top:8px">Application received for ${esc(role.title)}. Our recruiting team will reach out within 3 business days.</div>
+              `:isApplying?`
+                <form data-career-form="${role.id}" style="display:flex;flex-direction:column;gap:10px;margin-top:10px;padding-top:12px;border-top:1px solid var(--panel-border)">
+                  <div class="field"><label>Full Name</label><input class="input" name="name" required placeholder="Alex Morgan"></div>
+                  <div class="field"><label>Email</label><input class="input" name="email" type="email" required placeholder="alex@example.com"></div>
+                  <div class="field"><label>LinkedIn or GitHub URL</label><input class="input" name="link" required placeholder="https://github.com/alexmorgan"></div>
+                  <div style="display:flex;gap:8px;margin-top:4px">
+                    <button type="submit" class="btn-primary">Submit Application</button>
+                    <button type="button" class="btn-ghost" data-cancel-apply>Cancel</button>
+                  </div>
+                </form>
+              `:`
+                <div style="margin-top:auto;padding-top:8px">
+                  <button type="button" class="btn-primary" data-apply-role="${role.id}">Apply Now</button>
+                </div>
+              `}
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  }else if(r==='resources'){
+    kicker.textContent='Tabscrow Solar · Resources';
+    const cats=['all','Guides','Technical Briefs','Policy & Guarantee'];
+    const items=state.resourceFilter==='all'?RESOURCES:RESOURCES.filter(x=>x.cat===state.resourceFilter);
+    body.innerHTML=`
+      <h2 class="page-title">Technical briefs, homeowner guides &amp; 10-year guarantee terms.</h2>
+      <p class="page-lead">Explore how Tabscrow Solar maintains $0 electricity bills across changing seasons and utility tariff reforms.</p>
+      <div class="seg-bar">
+        ${cats.map(c=>`<button type="button" class="seg-btn ${state.resourceFilter===c?'is-active':''}" data-res-filter="${esc(c)}">${c==='all'?'All Resources':esc(c)}</button>`).join('')}
+      </div>
+      <div class="grid-3">
+        ${items.map(item=>{
+          const open=state.openResourceId===item.id;
+          return `
+            <div class="card">
+              <span class="meta-line">${esc(item.cat)} · ${esc(item.date)} · ${esc(item.read)}</span>
+              <h3>${esc(item.title)}</h3>
+              <p>${esc(open?item.body:item.summary)}</p>
+              <div style="margin-top:auto;padding-top:8px">
+                <button type="button" class="btn-ghost" data-toggle-res="${item.id}">${open?'Collapse Brief':'Read Brief'}</button>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+      <div class="divider"></div>
+      <h3 style="font-size:22px;font-weight:500;margin-bottom:8px">Frequently Asked Questions</h3>
+      <div>
+        ${FAQS.map((f,i)=>`
+          <div class="faq-item ${state.openFaqIdx===i?'is-open':''}">
+            <button type="button" class="faq-q" data-faq="${i}" aria-expanded="${state.openFaqIdx===i}">
+              <span>${esc(f.q)}</span>
+              <span class="num">${state.openFaqIdx===i?'−':'+'}</span>
+            </button>
+            <div class="faq-a">${esc(f.a)}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }else if(r==='customers'){
+    kicker.textContent='Tabscrow Solar · Customer Portal';
+    const cust=CUSTOMERS[state.customerIdx];
+    const months=['J','F','M','A','M','J','J','A','S','O','N','D'];
+    body.innerHTML=`
+      <h2 class="page-title">Live Home Telemetry &amp; 10-Year Guarantee Portal</h2>
+      <p class="page-lead">Inspect real-time Smart Controller dispatch, monthly generation profiles, and zero-bill protection status.</p>
+      <div class="seg-bar">
+        ${CUSTOMERS.map((c,i)=>`<button type="button" class="seg-btn ${state.customerIdx===i?'is-active':''}" data-cust="${i}">${esc(c.name.split('&')[0].trim())}</button>`).join('')}
+      </div>
+      <div class="grid-4">
+        <div class="card"><div class="stat-val">$0.00</div><div class="stat-lbl">${esc(cust.plan)}</div></div>
+        <div class="card"><div class="stat-val">${esc(cust.todayGen)}</div><div class="stat-lbl">Harvested Today</div></div>
+        <div class="card"><div class="stat-val">${esc(cust.battery)}</div><div class="stat-lbl">LiFePO4 Reserve</div></div>
+        <div class="card"><div class="stat-val">${esc(cust.gridImport)}</div><div class="stat-lbl">Net Grid Draw</div></div>
+      </div>
+      <div class="grid-2" style="margin-top:20px">
+        <div class="card">
+          <span class="meta-line">${esc(cust.home)}</span>
+          <h3>Annual Solar Generation (MWh)</h3>
+          <div class="bar-chart" aria-label="Monthly generation chart">
+            ${cust.gen.map((v,i)=>`
+              <div class="bar-col">
+                <div class="bar-fill" style="height:${Math.round(v/2.5*100)}%" title="${months[i]}: ${v} MWh"></div>
+                <span class="bar-lbl">${months[i]}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        <div class="card">
+          <span class="meta-line">Smart Controller Dispatch Mode</span>
+          <h3>Active Mode: ${esc(state.controllerMode)}</h3>
+          <div class="seg-bar" style="margin:6px 0 12px">
+            ${['Autonomous Zero-Bill','Storm Reserve','EV Priority'].map(m=>`
+              <button type="button" class="seg-btn ${state.controllerMode===m?'is-active':''}" data-ctrl-mode="${esc(m)}">${esc(m)}</button>
+            `).join('')}
+          </div>
+          ${state.supportSent?`
+            <div class="notice">Priority engineering ticket logged for ${esc(cust.name)}. Average response time is under 2 hours.</div>
+          `:`
+            <form id="custSupportForm" style="display:flex;flex-direction:column;gap:10px;margin-top:6px">
+              <div class="field">
+                <label for="supportMsg">Need a roof inspection or EV expansion check?</label>
+                <textarea class="textarea" id="supportMsg" rows="2" required placeholder="Describe your request (e.g., adding a Level-2 EV charger)..."></textarea>
+              </div>
+              <div><button type="submit" class="btn-primary">Message Support Team</button></div>
+            </form>
+          `}
+        </div>
+      </div>
+    `;
+  }else if(r==='quote'){
+    kicker.textContent='Tabscrow Solar · Instant Quote';
+    const q=state.quote;
+    const evKw=q.evs*1.6;
+    const arrayKw=Math.max(6.4,+(q.bill/24 + evKw).toFixed(1));
+    const batteryKwh=q.backup==='Full-Home 10-Year Buffer'?(q.bill>260?43.2:28.8):14.4;
+    const tenYrUtility=Math.round(q.bill*12*10*1.18);
+    const estMonthlyPlan=Math.max(89,Math.round(q.bill*0.64));
+    body.innerHTML=`
+      <h2 class="page-title">Get your instant 10-year $0 electricity bill quote.</h2>
+      <p class="page-lead">Adjust your current monthly utility bill, roof architecture, and EV needs to preview your Tabscrow Solar system and 10-year savings.</p>
+      <div class="grid-2" style="margin-top:22px">
+        <div class="card">
+          <h3>Home Energy Profile</h3>
+          <div class="field">
+            <label for="qZip">Property ZIP Code</label>
+            <input class="input" id="qZip" value="${esc(q.zip)}" maxlength="10" placeholder="97209">
+          </div>
+          <div class="field">
+            <label for="qBill">Current Average Electric Bill: <strong class="num" id="qBillVal">$${q.bill}/mo</strong></label>
+            <input class="range" id="qBill" type="range" min="80" max="650" step="10" value="${q.bill}">
+          </div>
+          <div class="field">
+            <label for="qRoof">Roof Material</label>
+            <select class="select" id="qRoof">
+              ${['Standing Seam Metal','Architectural Shingle','Flat / Modern Membrane','Clay or Slate Tile'].map(opt=>`<option ${q.roof===opt?'selected':''}>${esc(opt)}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field">
+            <label>Electric Vehicles</label>
+            <div class="seg-bar" style="margin:2px 0">
+              ${[0,1,2].map(n=>`<button type="button" class="seg-btn ${q.evs===n?'is-active':''}" data-q-ev="${n}">${n===0?'No EV':n===1?'1 EV':'2+ EVs'}</button>`).join('')}
+            </div>
+          </div>
+          <div class="field">
+            <label>Storage Coverage</label>
+            <div class="seg-bar" style="margin:2px 0">
+              ${['Full-Home 10-Year Buffer','Essential Circuits'].map(b=>`<button type="button" class="seg-btn ${q.backup===b?'is-active':''}" data-q-backup="${esc(b)}">${esc(b)}</button>`).join('')}
+            </div>
+          </div>
+        </div>
+        <div class="card" style="justify-content:space-between">
+          <div>
+            <span class="meta-line" id="qZipMeta">Recommended Tabscrow Configuration · ZIP ${esc(q.zip||'—')}</span>
+            <div class="grid-2" style="gap:16px;margin-top:14px">
+              <div><div class="stat-val" id="qArrayKw">${arrayKw} kW</div><div class="stat-lbl">Solar Array (${esc(q.roof)})</div></div>
+              <div><div class="stat-val" id="qBatteryKwh">${batteryKwh} kWh</div><div class="stat-lbl">Smart Controller Bank</div></div>
+              <div><div class="stat-val">$0 / mo</div><div class="stat-lbl">Utility Bill for 10 Years</div></div>
+              <div><div class="stat-val" id="qTenYr">$${tenYrUtility.toLocaleString()}</div><div class="stat-lbl">Est. 10-Year Utility Cost Avoided</div></div>
+            </div>
+            <p style="margin-top:14px">Estimated fixed Tabscrow equipment plan: <strong class="num" id="qEstPlan" style="color:var(--ink)">$${estMonthlyPlan}/mo</strong> vs. your current <span id="qCurBill">$${q.bill}/mo</span> rising utility bill.</p>
+          </div>
+          <div class="divider" style="margin:18px 0"></div>
+          ${q.submitted?`
+            <div class="notice">
+              <strong>Quote Locked · Reference ${esc(q.ref)}</strong><br>
+              We’ve prepared your 10-Year $0 Electricity Bill engineering dossier for ZIP ${esc(q.zip)}. A Tabscrow Solar specialist will send your roof shading model shortly.
+              <div style="margin-top:10px"><button type="button" class="btn-ghost" id="resetQuote">Edit Quote Parameters</button></div>
+            </div>
+          `:`
+            <form id="quoteForm" style="display:flex;flex-direction:column;gap:10px">
+              <div class="grid-2" style="gap:10px">
+                <div class="field"><label for="qName">Full Name</label><input class="input" id="qName" required placeholder="Jordan Ellis"></div>
+                <div class="field"><label for="qEmail">Email Address</label><input class="input" id="qEmail" type="email" required placeholder="jordan@example.com"></div>
+              </div>
+              <button type="submit" class="btn-primary" style="margin-top:4px">Lock In 10-Year $0 Bill Assessment</button>
+            </form>
+          `}
+        </div>
+      </div>
+    `;
+  }
+  wirePageEvents();
+}
+
+function wirePageEvents(){
+  const body=$('pageBody');
+  body.querySelectorAll('[data-how-stage]').forEach(b=>b.onclick=()=>{state.howStage=+b.dataset.howStage;renderPage()});
+  body.querySelectorAll('[data-weather]').forEach(b=>b.onclick=()=>{state.howWeather=b.dataset.weather;renderPage()});
+  const lr=$('loadRange');if(lr)lr.oninput=e=>{
+    state.howLoad=+e.target.value;
+    const wf=state.howWeather==='sunny'?1.0:state.howWeather==='overcast'?0.64:0.48;
+    const surplus=Math.max(0,(7.8*wf - state.howLoad)).toFixed(1);
+    const draw=Math.max(0,(state.howLoad - 7.8*wf)).toFixed(1);
+    const res=Math.min(98,Math.max(34,Math.round(74 + (7.8*wf - state.howLoad)*4))).toFixed(0);
+    $('howLoadVal').textContent=state.howLoad.toFixed(1)+' kW';
+    $('howReserveVal').textContent=res+'%';
+    $('howReserveLbl').textContent='Reserve ('+(Number(surplus)>0?'+'+surplus+' kW charging':'-'+draw+' kW buffer')+')';
+  };
+
+  body.querySelectorAll('[data-case-filter]').forEach(b=>b.onclick=()=>{state.caseFilter=b.dataset.caseFilter;renderPage()});
+  body.querySelectorAll('[data-case-id]').forEach(b=>b.onclick=()=>{state.selectedCaseId=b.dataset.caseId;renderPage()});
+
+  body.querySelectorAll('[data-about-tab]').forEach(b=>b.onclick=()=>{state.aboutTab=b.dataset.aboutTab;renderPage()});
+
+  body.querySelectorAll('[data-career-filter]').forEach(b=>b.onclick=()=>{state.careerFilter=b.dataset.careerFilter;renderPage()});
+  body.querySelectorAll('[data-apply-role]').forEach(b=>b.onclick=()=>{state.applyingRoleId=b.dataset.applyRole;renderPage()});
+  body.querySelectorAll('[data-cancel-apply]').forEach(b=>b.onclick=()=>{state.applyingRoleId=null;renderPage()});
+  body.querySelectorAll('[data-career-form]').forEach(f=>f.onsubmit=e=>{
+    e.preventDefault();
+    state.appliedRoles[f.dataset.careerForm]=true;
+    state.applyingRoleId=null;
+    renderPage();
+  });
+
+  body.querySelectorAll('[data-res-filter]').forEach(b=>b.onclick=()=>{state.resourceFilter=b.dataset.resFilter;renderPage()});
+  body.querySelectorAll('[data-toggle-res]').forEach(b=>b.onclick=()=>{
+    const id=b.dataset.toggleRes;
+    state.openResourceId=state.openResourceId===id?null:id;
+    renderPage();
+  });
+  body.querySelectorAll('[data-faq]').forEach(b=>b.onclick=()=>{
+    const idx=+b.dataset.faq;
+    state.openFaqIdx=state.openFaqIdx===idx?-1:idx;
+    renderPage();
+  });
+
+  body.querySelectorAll('[data-cust]').forEach(b=>b.onclick=()=>{state.customerIdx=+b.dataset.cust;state.supportSent=false;renderPage()});
+  body.querySelectorAll('[data-ctrl-mode]').forEach(b=>b.onclick=()=>{state.controllerMode=b.dataset.ctrlMode;renderPage()});
+  const csf=$('custSupportForm');if(csf)csf.onsubmit=e=>{e.preventDefault();state.supportSent=true;renderPage()};
+
+  const qz=$('qZip');if(qz)qz.oninput=e=>{
+    state.quote.zip=e.target.value;
+    const m=$('qZipMeta');if(m)m.textContent='Recommended Tabscrow Configuration · ZIP '+(state.quote.zip||'—');
+  };
+  const qb=$('qBill');if(qb)qb.oninput=e=>{
+    state.quote.bill=+e.target.value;
+    const q=state.quote;
+    const arrayKw=Math.max(6.4,+(q.bill/24 + q.evs*1.6).toFixed(1));
+    const batteryKwh=q.backup==='Full-Home 10-Year Buffer'?(q.bill>260?43.2:28.8):14.4;
+    const tenYr=Math.round(q.bill*12*10*1.18);
+    const est=Math.max(89,Math.round(q.bill*0.64));
+    $('qBillVal').textContent='$'+q.bill+'/mo';
+    $('qArrayKw').textContent=arrayKw+' kW';
+    $('qBatteryKwh').textContent=batteryKwh+' kWh';
+    $('qTenYr').textContent='$'+tenYr.toLocaleString();
+    $('qEstPlan').textContent='$'+est+'/mo';
+    $('qCurBill').textContent='$'+q.bill+'/mo';
+  };
+  const qr=$('qRoof');if(qr)qr.onchange=e=>{state.quote.roof=e.target.value;renderPage()};
+  body.querySelectorAll('[data-q-ev]').forEach(b=>b.onclick=()=>{state.quote.evs=+b.dataset.qEv;renderPage()});
+  body.querySelectorAll('[data-q-backup]').forEach(b=>b.onclick=()=>{state.quote.backup=b.dataset.qBackup;renderPage()});
+  const qf=$('quoteForm');if(qf)qf.onsubmit=e=>{
+    e.preventDefault();
+    state.quote.submitted=true;
+    state.quote.ref='TS-'+Math.floor(100000+Math.random()*900000);
+    renderPage();
+  };
+  const rq=$('resetQuote');if(rq)rq.onclick=()=>{state.quote.submitted=false;renderPage()};
+
+  body.querySelectorAll('[data-route]').forEach(a=>a.onclick=e=>{
+    e.preventDefault();
+    navigate(a.getAttribute('data-route'));
+  });
+}
+
+function navigate(route){
+  const valid=['home','how-it-works','our-cases','about-us','careers','resources','customers','quote'];
+  state.route=valid.includes(route)?route:'home';
+  if(location.hash!=='#'+state.route){
+    history.pushState(null,'','#'+state.route);
+  }
+  closeMobileNav();
+  renderPage();
+}
+
+function closeMobileNav(){
+  $('mobileNav').classList.remove('is-open');
+  $('menuBtn').setAttribute('aria-expanded','false');
+}
+
+document.querySelectorAll('a[data-route]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    navigate(a.getAttribute('data-route'));
+  });
+});
+
+$('pageClose').onclick=()=>navigate('home');
+$('menuBtn').onclick=()=>{
+  const open=$('mobileNav').classList.toggle('is-open');
+  $('menuBtn').setAttribute('aria-expanded',String(open));
+};
+$('mobileClose').onclick=closeMobileNav;
+addEventListener('keydown',e=>{if(e.key==='Escape'&&state.route!=='home')navigate('home')});
+addEventListener('hashchange',()=>{
+  const h=location.hash.replace('#','')||'home';
+  if(h!==state.route){state.route=h;renderPage()}
+});
+if(location.hash&&location.hash!=='#home'){
+  navigate(location.hash.replace('#',''));
+}
+</script>
+</body>
+</html>
